@@ -1,6 +1,6 @@
 import random
 import os
-from IxoriDB.settings import BLAST_DIR, UPLOAD_DIR
+from IxoriDB.settings import BLAST_DIR, UPLOAD_DIR, DB_DIR
 from Bio import SeqIO
 
 
@@ -43,8 +43,8 @@ def blastCommandLine(seq, type_of_seq, evalue, word_size, max_target_seq):
     fasta_check = is_fasta(UPLOAD_DIR + "tmp/%i.fa" %work)
     if fasta_check:
         if type_of_seq == "Peptide":
-            cmd = "%s/blastp -db blast_db/Trinity_MGSG.pep -query %stmp/%i.fa -max_target_seqs %i -word_size " \
-                  "%i -evalue %f -out %stmp/%i.blast -outfmt 6" %(BLAST_DIR, UPLOAD_DIR, work, int(max_target_seq), int(word_size), float(evalue), UPLOAD_DIR, work)
+            cmd = "%s/blastp -db %sblast_db/Trinity_MGSG.pep -query %stmp/%i.fa -max_target_seqs %i -word_size " \
+                  "%i -evalue %f -out %stmp/%i.blast -outfmt 6" %(BLAST_DIR, DB_DIR, UPLOAD_DIR, work, int(max_target_seq), int(word_size), float(evalue), UPLOAD_DIR, work)
             os.system(cmd)
 
         elif type_of_seq == "Nucleotide":
