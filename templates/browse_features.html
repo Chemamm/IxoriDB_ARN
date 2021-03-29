@@ -40,8 +40,21 @@
     <button class="button btn-lg loading buttonload" type="submit" id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Searching...">
         Search
     </button>
+     <button class="button" type="button" id="example">Load Example</button>
     </form>
 {% endblock %}
+
+{% block add_scripts %}
+    <script>
+    $(document).ready(function(){
+        $('#example').on('click', function(){
+            $('#id_family').val("serpin");
+            $('#id_secreted').val("Secreted")
+        });
+    });
+    </script>
+{% endblock %}
+
 
 {% block load_animation %}
     <!-- Loading animation -->

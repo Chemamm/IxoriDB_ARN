@@ -18,9 +18,19 @@
        <button class="button btn-lg loading buttonload" type="submit" id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Searching...">
         Search
     </button>
+    <button class="button" type="button" id="example">Load Example</button>
         </div>
     </div>
-</form>
-
-
+    </form>
 {% endblock %}
+
+{% block add_scripts %}
+    <script>
+    $(document).ready(function(){
+        $('#example').on('click', function(){
+            $('#id_TranscriptID').val("MG_TRINITY_DN1014_c0_g1_i4");
+        });
+    });
+    </script>
+{% endblock %}
+

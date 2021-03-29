@@ -47,6 +47,16 @@
             <button class="button btn-lg loading buttonload" type="submit" id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Blasting...">
         Blast
     </button>
+    <button class="button" type="button" id="example">Load Example</button>
     </form>
 {% endblock %}
 
+{% block add_scripts %}
+    <script>
+    $(document).ready(function(){
+        $('#example').on('click', function(){
+            $('#id_sequence').val(">Example_sequence_1\nSTFHAQLLKVDFVNGGQAAIDEINRWVKQK\n>Example_sequence_2\nVLGWKTQDPTNPKFDNLAHYAVSTQVEVREYYDTVLELLEVKTQIVAA\n");
+        });
+    });
+    </script>
+{% endblock %}
