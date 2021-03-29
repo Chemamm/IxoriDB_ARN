@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>IxoriDB - Browse protein - Results</title>
+{% endblock %}
+
+{% block add_load %}
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.min.css" crossorigin="anonymous">
+{% endblock %}
+{% block collapse %}{% endblock %}
+{% block bfeatures_class %}<li class="active">{% endblock %}
+
+{% block core %}
+<h2>Results</h2>
+<div class="line"></div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <table id="infotable" class="table table-striped">
+            <thead>
+              <tr>
+                <th>Transcript ID</th>
+                <th>Protein ID</th>
+                <th>Protein description</th>
+                <th>Family</th>
+                <th>GO terms</th>
+                <th>GO terms description</th>
+                <th>Interpro domains</th>
+                <th>Interpro domains description</th>
+                <th>Signal P</th>
+                <th>Transmembrane domain</th>
+                <th>Class</th>
+                <th>Tissue specificity</th>
+                <th>CDS sequence</th>
+                <th>Peptide sequence</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for transcript in transcripts %}
+                <tr>
+                    <td style="color: blue;">
+                        <a href="/IxoriDB/browse_transcript/{{ transcript.transcriptID }}">
+                            <u>{{ transcript.transcriptID }}</u>
+                        </a>
+                    </td>
+                    <td>{{ transcript.hitID }}</td>
+                    <td>{{ transcript.description }}</td>
+                    <td>{{ transcript.family }}</td>
+                    <td>{{ transcript.merged }}</td>
+                    <td>{{ transcript.merged_des }}</td>
+                    <td>{{ transcript.ipro_id }}</td>
+                    <td>{{ transcript.ipro_des }}</td>
+                    <td>{{ transcript.sigp }}</td>
+                    <td>{{ transcript.tm_domain_all }}</td>
+                    <td>{{ transcript.classification }}</td>
+                    <td>{{ transcript.eclass }}</td>
+                    <td>{{ transcript.cds_seq }}</td>
+                    <td>{{ transcript.pep_seq }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block add_scripts %}
+    <script src="https://code.jquery.com/jquery-3.5.1.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.html5.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#infotable').DataTable( {
+        dom: '<"top"B>Rt<"bottom"p><"clear">',
+        scrollX: true,
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+        ],
+        "columnDefs": [
+            { "width": "1000px", "targets": 12},
+            { "width": "1000px", "targets": 13},
+            { "width": "300px", "targets": 0},
+            { "width": "150px", "targets": 1},
+            { "width": "300px", "targets": 2},
+            { "width": "150px", "targets": 3},
+            { "width": "150px", "targets": 4},
+            { "width": "200px", "targets": 5},
+            { "width": "150px", "targets": 6},
+            { "width": "200px", "targets": 7},
+            { "width": "200px", "targets": 10},
+
+
+  ],
+        responsive: true,
+    } )
+} );
+</script>
+{% endblock %}
+
+
+

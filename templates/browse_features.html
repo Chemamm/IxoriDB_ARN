@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>IxoriDB - Browse by feature</title>
+{% endblock title %}
+
+{% load crispy_forms_tags %}
+
+{% block collapse %}{% endblock %}
+{% block bfeatures_class %}<li class="active">{% endblock %}
+
+{% block core %}
+<h2>Browse by features</h2>
+<div class="line"></div>
+    <p>Every selected filter will be applied to get the final output</p>
+    <div class="line"></div>
+    <form method="POST" class="post-form">{% csrf_token %}
+        <div class="form-group col-md-6 mb-0">
+        {{ formFeatures.family|as_crispy_field }}
+        </div>
+        <div class="line"></div>
+            <div class="form-group col-md-3 mb-0">
+            {{ formFeatures.secreted|as_crispy_field }}
+            </div>
+            <div class="form-group col-md-3 mb-0">
+            {{ formFeatures.transmembrane|as_crispy_field }}
+            </div>
+        <div class="form-group col-md-4 mb-1">
+        {{ formFeatures.classification|as_crispy_field }}
+        </div>
+        <div class="line"></div>
+        <div class="form-group col-md-4 mb-1">
+        {{ formFeatures.eclass|as_crispy_field }}
+        </div>
+        <div class="line"></div>
+        <div class="form-group col-md-4 mb-1">
+        {{ formFeatures.goterm|as_crispy_field }}
+        </div>
+    <div class="line"></div>
+    <button class="button btn-lg loading buttonload" type="submit" id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Searching...">
+        Search
+    </button>
+    </form>
+{% endblock %}
+
+{% block load_animation %}
+    <!-- Loading animation -->
+    <script type="text/javascript">
+    $('.loading').on('click',function(){
+        var $btn = $(this);
+            $btn.button('loading');
+
+    });
+
+    </script>
+    {% endblock %}

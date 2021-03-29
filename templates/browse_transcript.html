@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>IxoriDB - Browse transcript</title>
+{% endblock title %}
+
+{% load crispy_forms_tags %}
+
+{% block collapse %}{% endblock %}
+{% block btranscript_class %}<li class="active">{% endblock %}
+{% block core %}
+<h2>Browse by transcript ID</h2>
+<div class="line"></div>
+<form method="POST" class="post-form">{% csrf_token %}
+    <div class="row">
+        <div class="col-lg-6">
+    {{ formID|crispy }}
+       <button class="button btn-lg loading buttonload" type="submit" id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Searching...">
+        Search
+    </button>
+        </div>
+    </div>
+</form>
+
+
+{% endblock %}

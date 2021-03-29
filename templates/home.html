@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block home_class %}<li class="nav-item active">{% endblock %}
+
+{% block core %}
+    <div class="row">
+        <div class="col-lg-12">
+           <h2>Aim of IxoriDB</h2>
+            <p style="text-align:justify;">The main objective of IxoriDB is to provide the scientific community with an
+                useful and accessible tool for the user that allows obtaining information on one or more Ixodes ricinus
+                sequences quickly and easily. To do so, the database counts with a transcriptome assembled from 88
+                Ixodes ricinus samples as well as expression and function data of the sequences of this transcriptome. </p>
+            <p style="text-align:justify;">In this way, IxoriDB allows you to search its local database in order to
+                obtain information for one or more proteins or sequences. The information obtainable varies from
+                expression data in different tissues and feeding stages of the tick, to functional annotation and
+                different features of the proteins encoded by the different transcripts in our transcriptome.</p>
+        </div>
+    <div class="line"></div>
+    </div>
+{% comment %}
+    <div class="row">
+        <div class="col-lg-11">
+            <h2>Main Features</h2>
+            <div class="line"></div>{% endcomment %}
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-2 d-flex align-items-stretch">
+{#                <img class="card-img-top" src="{% static project.image %}">#}
+                <div class="card-body">
+                    <h3 class="card-title">Browse the database</h3>
+                    <p class="card-text" style="text-align:justify;">Browse the different transcripts and proteins encoded by them using either
+                        the Transcript ID or the protein ID from Uniprot or TickSialoFam. You can also browse our database
+                        using different features as the family of the encoded protein, whether it is putatively secreted or not
+                        or if it has an specific GO term associated, among others.</p>
+                    <p class="card-text" style="text-align:justify;">This way, you can access to all the features and expression information of
+                        the proteins/transcripts of interests.</p>
+                </div>
+                <div class="card-footer">
+                    <a class="button" type="button" href="{% url "btranscript" %}">Try it!</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 d-flex align-items-stretch">
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h3 class="card-title">Blast to the database</h3>
+                    <p class="card-text" style="text-align:justify;">Blast your sequences with our database and find which of
+                        our transcripts are the ones with the best homology to them. </p>
+                    <p class="card-text" style="text-align:justify;">You can then access to all the expression
+                        and features information of the transcripts of interests by clicking on them.</p>
+                </div>
+                <div class="card-footer">
+                    <a class="button" type="button" href="{% url "blast" %}">Try it!</a>
+                </div>
+            </div>
+        </div>
+        </div>
+            <div class="line"></div>
+        </div>
+    </div>
+{% endblock %}
+
+

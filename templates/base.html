@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{% block head %}
+    {% block meta %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        {% block title %}
+        <title>IxoriDB - Home</title>
+        {% endblock title %}
+    {% endblock meta %}
+    {% block load %}
+        {# loading bootstrap4 library #}
+        {% load bootstrap4 %}
+
+        {# CSS Bootstrap #}
+        {% bootstrap_css %}
+
+        {# Loading static files #}
+        {% load static %}
+    {% endblock load %}
+
+    {% block external_load %}
+        <!-- Bootstrap CSS CDN -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+        <!-- Our Custom CSS -->
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+
+        <!-- loading button CSS -->
+        <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/loadingio/ldbutton@v1.0.1/dist/ldbtn.min.css" crossorigin="anonymous"/>
+
+
+        <!-- Font Awesome JS -->
+        <script src="https://kit.fontawesome.com/cee16c8ac8.js" crossorigin="anonymous"></script>
+    {% endblock external_load %}
+    {% block add_load %}
+    {% endblock %}
+    {% block style %}
+    {% endblock %}
+{% endblock head %}
+</head>
+
+<body>
+{% block body %}
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        {% block sidebar %}
+        <nav id="sidebar">
+            <div class="sidebar-header">
+		<a href="{% url "home" %}">
+                <i class="fas fa-spider"></i>
+                <h3>IxoriDB</h3>
+		</a>
+            </div>
+
+            <ul class="list-unstyled components">
+                {% block getstarted_class %}<li>{% endblock %}
+                    <a href="{% url "getstarted" %}">
+                        <i class="fas fa-play-circle"></i>
+                        Get Started
+                    </a>
+                </li>
+                <li>
+                    <a href="#homeSubmenu" data-toggle="collapse" {% block expanded %}aria-expanded="false"{% endblock %} class="dropdown-toggle">
+                        <i class="fas fa-search"></i>
+                        Browse IxoriDB
+                    </a>
+                {% block dropdown_list %}
+                    <ul class="{% block collapse %}collapse {% endblock %}list-unstyled" id="homeSubmenu">
+                        {% block btranscript_class %}<li>{% endblock %}
+                            <a href="{% url "btranscript" %}">Browse Transcript</a>
+                        </li>
+                        {% block bprotein_class %}<li>{% endblock %}
+                            <a href="{% url "bprotein" %}">Browse Protein</a>
+                        </li>
+                        {% block bfeatures_class %}<li>{% endblock %}
+                            <a href="{% url "bfeatures" %}">Browse by Feature</a>
+                        </li>
+                    </ul>
+                </li>
+                    {% endblock %}
+                {% block blast_class %}<li>{% endblock %}
+                    <a href={% url "blast" %}>
+                        <i class="fas fa-vial"></i>
+                        Blast Sequence/s
+                    </a>
+{% comment %}                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fas fa-upload"></i>
+                        Upload <Data></Data>
+                    </a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu">
+                        <li>
+                            <a href="#">Upload a Transcriptome</a>
+                        </li>
+                        <li>
+                            <a href="#">Upload Sequences</a>
+                        </li>
+                    </ul>{% endcomment %}
+                </li>
+                {% block download_class %}<li>{% endblock %}
+                    <a href="{% url 'download' %}">
+                        <i class="fas fa-download"></i>
+                        Download
+                    </a>
+                </li>
+                {% block cite_class %}<li>{% endblock %}
+                    <a href="{% url 'cite' %}">
+                        <i class="fas fa-graduation-cap"></i>
+                        How to cite
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% endblock sidebar %}
+
+        <!-- Page Content  -->
+        <div id="content">
+        {% block content %}
+            {% block navbar %}
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    {% block collapse_button %}
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                    </button>
+                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
+                    {% endblock collapse_button %}
+
+                    {% block navbar_pages %}
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav ml-auto">
+                            {% block home_class %}<li class="nav-item">{% endblock %}
+                                <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+                            </li>
+                            {% block about_class %}<li class="nav-item">{% endblock %}
+                                <a class="nav-link" href="{% url 'about' %}"><i class="far fa-question-circle"></i> About</a>
+                            </li>
+                            {% block contact_class %}<li class="nav-item">{% endblock %}
+                                <a class="nav-link" href="{% url 'contact' %}"><i class="fas fa-envelope"></i> Contact</a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% endblock navbar_pages %}
+                </div>
+            </nav>
+            {% endblock navbar %}
+            {% block core %}
+            {% endblock core %}
+        {% endblock content %}
+        </div>
+    </div>
+
+    {% block scripts %}
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <!-- Chart JS -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+    </script>
+    {% block load_animation %}
+    <!-- Loading animation -->
+    <script type="text/javascript">
+    $('.loading').on('click',function(){
+        var $btn = $(this);
+            $btn.button('loading');
+            setTimeout(function () {
+              $btn.button('reset')
+            }, 3000)
+    });
+
+    </script>
+    {% endblock %}
+    <!-- tables -->
+
+
+    {% endblock scripts %}
+    {% block add_scripts %}
+    {% endblock %}
+{% endblock body %}
+</body>
+
+</html>

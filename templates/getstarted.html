@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block style %}
+<style>
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #444444;
+    text-align:justify;
+}
+ol {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #444444;
+    text-align:justify;
+}
+
+
+</style>
+
+{% endblock %}
+
+{% block getstarted_class %}<li class="active">{% endblock %}
+
+{% block core %}
+    <h2>Get Started</h2>
+    <div class="line"></div>
+
+    <p>In this quick guide we will present you the main features of IxoriDB and the output you will get using them:</p>
+    <ul style="font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #444444;
+    text-align:justify;">
+        <li>Browse the database</li>
+        <li>Blast to the database</li>
+    </ul>
+
+    <p>We will show you how to proceed to explore our database, to find the best homology to your sequences and to
+        interpret the results provided by our webpage.</p>
+    <div class="line"></div>
+    <h4>Browse the database</h4>
+    <p>In order to explore our database you have three main options:</p>
+     <ul style="font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #444444;
+    text-align:justify;">
+        <li>Browse transcript</li>
+        <li>Browse protein</li>
+        <li>Browse by feature</li>
+    </ul>
+    <div class="line"></div>
+    <h5>Browse transcript</h5>
+
+    <p>Only one field is required to make the search, the transcript ID as it is in
+        <a href="#"><u style="color: blue;">NCBI</u></a> or in
+        <a href="#"><u style="color: blue;">our transcriptome.</u></a></p>
+
+    <p>It will lead you to a table with the following information about the browsed transcript:</p>
+    <ol>
+        <li><b>Transcript ID:</b> ID of the transcript.</li>
+        <li><b>Protein ID:</b> ID of the protein with the best homology to the transcript. The protein was selected
+            based on BitScore after a Blast with 4 different databases: ArachnidaDB (local database),
+            SwissProt, Uniref90 and TickSialoFam.</li>
+        <li><b>Protein description:</b> Description of the protein with the best homology to the transcript.</li>
+        <li><b>Family:</b> Family of the protein with the best homology to the transcript.</li>
+        <li><b>GO terms:</b> GO terms associated to the protein or to the conserved domains found in the CDS.</li>
+        <li><b>GO terms description:</b> Description of the GO terms.</li>
+        <li><b>Interpro domains:</b> Conserved domains existing in the CDS of the transcript. Provided by InterProScan. </li>
+        <li><b>Interpro domains description:</b> Description of the conserved domains.</li>
+        <li><b>Signal P:</b> Existence of a SignalP in the protein.</li>
+        <li><b>Transmembrane domain:</b> Number of transmembrane domains found in the peptide.</li>
+        <li><b>Class:</b> According to the classification of our paper, transcripts can encode putatively secreted and
+            annotated proteins, putatively secreted not annotated proteins, putatively non-secreted and annotated
+            proteins and putatively non-secreted not annotated proteins.</li>
+        <li><b>Tissue specificity:</b> Indicates if the transcript is midgut specific, salivary gland specific or neutral.</li>
+        <li><b>CDS sequence:</b> Nucleotide sequence of the CDS.</li>
+        <li><b>Peptide sequence:</b> Peptide sequence of the protein.</li>
+    </ol>
+    <p>This table and every other can be downloaded as excel or tsv files, or even be copied to the clipboard using
+        the buttons in top of it.</p>
+
+    <p>According to the expression values (FPKM) found in our study, two interactive graphics will be shown. These
+        graphics can be saved by right clicking on them and choosing “Save image as...”. Also, this graphics are interactive,
+        so they have the following features:</p>
+     <ul style="font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #444444;
+    text-align:justify;">
+        <li>You can show or hide classes by clicking on them in the legend.</li>
+        <li>You can see exact values putting your mouse on the desired point.</li>
+        <li>You can toggle the scale of the graphic to logarithmic in case one or some values are extremely high by
+            clicking on the button “Toggle Scale”.</li>
+    </ul>
+    <p>The first table shows how the expression of the transcript varies at different feeding times for the two tissues
+        and the two exposures of the host. This expression value represent the mean of all expression values of the
+        transcript for the samples of that condition.</p>
+
+    <p>The second table shows the 88 expression values of the different samples for the transcript. Here you can find
+        the expression values coming for the samples which belong to unfed ticks.</p>
+    <a class="button" type="button" href="{% url "btranscript" %}">Try it!</a>
+    <div class="line"></div>
+    <h5>Browse protein.</h5>
+
+    <p>Only one field is required, the protein ID you are looking for as it is in Uniprot or in TickSialoFam.</p>
+
+    <p>It will lead you to a table showing all the transcripts which have the best homology with the desired protein.
+        The table have the same fields mentioned in the “Browse transcript” section, but you will find the transcript
+        ID hyperlinked in case you want to see the information and the graphics for an specific transcript as it is
+        explained in the “Browse transcript” section.</p>
+
+    <p>This table and every other can be downloaded as excel or tsv files, or even be copied to the clipboard using
+        the buttons in top of it.</p>
+    <a class="button" type="button" href="{% url "bprotein" %}">Try it!</a>
+    <div class="line"></div>
+    <h5>Browse by feature.</h5>
+
+    <p>If you want to browse the entire transcriptome you can leave all fields empty and press the search button.</p>
+
+    <p>Otherwise you may filter this browse by different features (you can select more than one filter):</p>
+    <ol>
+        <li><b>Family:</b> Select a family of interest. Only transcript which have the best homology with a protein of that
+            family will be shown.</li>
+        <li><b>Secreted:</b> You can browse only transcripts putatively secreted or only transcripts putatively non-secreted.</li>
+        <li><b>Transmembrane domain:</b> You can browse only transcripts with at least one transmembrane domain or only
+            transcripts with no transmembrane domain.</li>
+        <li><b>Class:</b> You can filter the transcripts that encode proteins of one of the following classes: putatively
+            secreted and annotated proteins, putatively secreted not annotated proteins, putatively non-secreted and
+            annotated proteins and putatively non-secreted not annotated proteins.</li>
+        <li><b>Tissue specificity:</b> Only midgut specific transcripts, salivary glands specific transcripts or neutral
+            transcripts will be shown, depending of your choice.</li>
+        <li><b>GO terms:</b> Only transcripts with the introduced GO term will be shown.</li>
+    </ol>
+    <p>This search will lead you to a table showing the transcripts that matched your criteria. The table have the same
+        fields as mentioned in the “Browse transcript” section. You will find the transcript ID hyperlinked in case you
+        want to see the information and the graphics for an specific transcript as it is in the “Browse transcript”
+        section.</p>
+
+    <p>This table and every other can be downloaded as excel or tsv files, or even be copied to the clipboard using the
+        buttons in top of it.</p>
+    <a class="button" type="button" href="{% url "bfeatures" %}">Try it!</a>
+    <div class="line"></div>
+
+    <h4>Blast to the database</h4>
+
+    <p>Using this feature you can blast your sequences to our transcriptome, specifically to the proteins encoded by the
+        coding sequences of the transcript in our transcriptome.<p/>
+
+    <p>You can paste a sequence in Fasta format. That is, a sequence name is required in the following format: ">
+        sequence name". Or select a Fasta file from your computer.</p>
+
+    <p>You need to select the type of sequence introduced: Peptide or nucleotide. And you can just press the button to
+        find the transcripts with the best homology to your sequences.</p>
+
+    <p>There is a section with advanced blast options, just in case you want to customize the alignment:</p>
+    <ol>
+        <li><b>E-value cut-off:</b> Maximum e-value for the alignment to be considered as valid.</li>
+        <li><b>Word-size:</b> Length of an exact sequence match, as start region for the final alignment.</li>
+        <li><b>Max targets per seq:</b> Number of hits shown per sequence.</li>
+    </ol>
+    <p>Once the blast is finished, the output of the blast will be shown in a table that can be copied to the clipboard
+        or downloaded in excel or tsv format. The table will have the following fields:</p>
+    <ol>
+        <li><b>Query ID:</b> The name of your sequence.</li>
+        <li><b>Hit ID:</b> The ID of the transcript of our database. It is hyperlinked in case you want to see the information
+            and the graphics for an specific transcript as it is explained in the “Browse transcript” section.</li>
+        <li><b>Identity:</b> Percentage of identical matches.</li>
+        <li><b>Length:</b> Alignment length or sequence overlap.</li>
+        <li><b>Mismatch:</b> Number of mismatches.</li>
+        <li><b>Gap openings:</b> Number of gap openings.</li>
+        <li><b>Query start:</b> Start of alignment in query.</li>
+        <li><b>Query end:</b> End of alignment in query.</li>
+        <li><b>Hit start:</b> Start of alignment in hit.</li>
+        <li><b>Hit end:</b> End of alignment in hit.</li>
+        <li><b>Expect value:</b> E-value (number of expected hits of similar quality that could be found just by chance).</li>
+        <li><b>Bit Score:</b> The required size of a sequence database in which the current match could be found just by chance.</li>
+    </ol>
+    <p>You can find more information about the E-value and Bit Score
+        <a href="http://www.metagenomics.wiki/tools/blast/evalue"><u style="color: blue;">here</u></a>.</p>
+<a class="button" type="button" href="{% url "blast" %}">Try it!</a>
+    <div class="line"></div>
+
+{% endblock %}

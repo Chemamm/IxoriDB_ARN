@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>IxoriDB - Browse transcript - Results</title>
+{% endblock %}
+
+{% block add_load %}
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.min.css" crossorigin="anonymous">
+{% endblock %}
+
+{% block collapse %}{% endblock %}
+{% block btranscript_class %}<li class="active">{% endblock %}
+{% block core %}
+<h2>Results</h2>
+<div class="line"></div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <table id="infotable" class="table table-striped">
+            <thead>
+              <tr>
+                <th>Transcript ID</th>
+                <th>Protein ID</th>
+                <th>Protein description</th>
+                <th>Family</th>
+                <th>GO terms</th>
+                <th>GO terms description</th>
+                <th>Interpro domains</th>
+                <th>Interpro domains description</th>
+                <th>Signal P</th>
+                <th>Transmembrane domain</th>
+                <th>Class</th>
+                <th>Tissue specificity</th>
+                <th>CDS sequence</th>
+                <th>Peptide sequence</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ transcript.transcriptID }}</td>
+                    <td>{{ transcript.hitID }}</td>
+                    <td>{{ transcript.description }}</td>
+                    <td>{{ transcript.family }}</td>
+                    <td>{{ transcript.merged }}</td>
+                    <td>{{ transcript.merged_des }}</td>
+                    <td>{{ transcript.ipro_id }}</td>
+                    <td>{{ transcript.ipro_des }}</td>
+                    <td>{{ transcript.sigp }}</td>
+                    <td>{{ transcript.tm_domain_all }}</td>
+                    <td>{{ transcript.classification }}</td>
+                    <td>{{ transcript.eclass }}</td>
+                    <td>{{ transcript.cds_seq }}</td>
+                    <td>{{ transcript.pep_seq }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+    <div class="line"></div>
+    <div style="width:85%;">
+		<canvas id="EChart"></canvas>
+	</div>
+    <button class= "button" id="toggleScale">Toggle Scale</button>
+    <div class="line"></div>
+    <div style="width:85%;">
+		<canvas id="ScatterChart"></canvas>
+	</div>
+    <button class= "button" id="toggleScale2">Toggle Scale</button>
+    <div class="line"></div>
+
+{% endblock %}
+
+{% block add_scripts %}
+    <script src="https://code.jquery.com/jquery-3.5.1.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.html5.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#infotable').DataTable( {
+        dom: '<"top"B>Rt<"bottom"p><"clear">',
+        scrollX: true,
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+        ],
+        "columnDefs": [
+            { "width": "1000px", "targets": 12},
+            { "width": "1000px", "targets": 13},
+            { "width": "300px", "targets": 0},
+            { "width": "150px", "targets": 1},
+            { "width": "300px", "targets": 2},
+            { "width": "150px", "targets": 3},
+            { "width": "150px", "targets": 4},
+            { "width": "200px", "targets": 5},
+            { "width": "150px", "targets": 6},
+            { "width": "200px", "targets": 7},
+            { "width": "200px", "targets": 10},
+
+
+  ],
+        responsive: true,
+    } )
+} );
+</script>
+
+
+<script>
+
+var type = 'linear';
+var labels = ["12h", "24h", "48h", "72h", "96h"]
+var dataSG_unfed = ({{ transcript.SG_unfed_1_5mg_pre2_FPKM }} + {{ transcript.SG_unfed_1_7mg_pre4_FPKM }} + {{ transcript.SG_unfed_1_4mg_pre6_FPKM }} + {{ transcript.SG_unfed_1_6mg_pre8_FPKM }} + {{ transcript.SG_unfed_1_4mg_pre10_FPKM }})/5
+var dataSG_1 = [
+    ({{ transcript.SG_1_12h_1_5mg_1_FPKM }} + {{ transcript.SG_1_12h_2mg_105_FPKM }} + {{ transcript.SG_1_12h_1_8mg_5_FPKM }} + {{ transcript.SG_1_12h_1_7mg_101_FPKM }} + {{ transcript.SG_1_12h_2mg_103_FPKM }})/5,
+    ({{ transcript.SG_1_24h_1_5mg_7_FPKM }} + {{ transcript.SG_1_24h_1_7mg_9_FPKM }} + {{ transcript.SG_1_24h_2_3mg_109_FPKM }} + {{ transcript.SG_1_24h_1_6mg_106_FPKM }} + {{ transcript.SG_1_24h_2_3mg_8_FPKM }})/5,
+    ({{ transcript.SG_1_48h_3_2mg_13_FPKM }} + {{ transcript.SG_1_48h_3mg_15_FPKM }} + {{ transcript.SG_1_48h_2_9mg_111_FPKM }} + {{ transcript.SG_1_48h_3_1mg_113_FPKM }} + {{ transcript.SG_1_48h_2_9mg_114_FPKM }})/5,
+    ({{ transcript.SG_1_72h_5_2mg_18_FPKM }} + {{ transcript.SG_1_72h_7_4mg_19_FPKM }} + {{ transcript.SG_1_72h_5_5mg_20_FPKM }} + {{ transcript.SG_1_72h_6_2mg_116_FPKM }} + {{ transcript.SG_1_72h_5_9mg_118_FPKM }})/5,
+    ({{ transcript.SG_1_96h_10_3mg_21_FPKM }} + {{ transcript.SG_1_96h_10_3mg_22_FPKM }} + {{ transcript.SG_1_96h_10_2mg_24_FPKM }} + {{ transcript.SG_1_96h_9_1mg_121_FPKM }} + {{ transcript.SG_1_96h_9_5mg_122_FPKM }})/5,
+]
+var dataSG_2 = [
+    ({{ transcript.SG_2_12h_2_2mg_52_FPKM }} + {{ transcript.SG_2_12h_1_9mg_53_FPKM }} + {{ transcript.SG_2_12h_2mg_152_FPKM }} + {{ transcript.SG_2_12h_1_7mg_153_FPKM }} + {{ transcript.SG_2_12h_1_8mg_155_FPKM }})/5,
+    ({{ transcript.SG_2_24h_2_2mg_56_FPKM }} + {{ transcript.SG_2_24h_2_4mg_59_FPKM }} + {{ transcript.SG_2_24h_2_2mg_156_FPKM }} + {{ transcript.SG_2_24h_2_3mg_157_FPKM }} + {{ transcript.SG_2_24h_2_5mg_159_FPKM }})/5,
+    ({{ transcript.SG_2_48h_4_6mg_62_FPKM }} + {{ transcript.SG_2_48h_4_5mg_63_FPKM }} + {{ transcript.SG_2_48h_4_2mg_65_FPKM }} + {{ transcript.SG_2_48h_5mg_162_FPKM }} + {{ transcript.SG_2_48h_4_3mg_163_FPKM }})/5,
+    ({{ transcript.SG_2_72h_8_7mg_67_FPKM }} + {{ transcript.SG_2_72h_8_2mg_68_FPKM }} + {{ transcript.SG_2_72h_9_3mg_69_FPKM }} + {{ transcript.SG_2_72h_6_7mg_166_FPKM }} + {{ transcript.SG_2_72h_7_2mg_167_FPKM }})/5,
+    ({{ transcript.SG_2_96h_11_1mg_71_FPKM }} + {{ transcript.SG_2_96h_12_9mg_74_FPKM }} + {{ transcript.SG_2_96h_15_1mg_75_FPKM }} + {{ transcript.SG_2_96h_10_2mg_171_FPKM }} + {{ transcript.SG_2_96h_10_1mg_172_FPKM }})/5,
+]
+var dataMG_unfed = ({{ transcript.MG_unfed_1_7mg_pre4_FPKM }} + {{ transcript.MG_unfed_1_4mg_pre10_FPKM }} + {{ transcript.MG_unfed_1_6mg_pre8_FPKM }})/3
+var dataMG_1 = [
+    ({{ transcript.MG_1_12h_1_8mg_4_FPKM }} + {{ transcript.MG_1_12h_1_8mg_5_FPKM }} + {{ transcript.MG_1_12h_1_8mg_104_FPKM }})/3,
+    ({{ transcript.MG_1_24h_1_7mg_9_FPKM }} + {{ transcript.MG_1_24h_1_6mg_10_FPKM }} + {{ transcript.MG_1_24h_1_9mg_107_FPKM }})/3,
+    ({{ transcript.MG_1_48h_3_2mg_13_FPKM }} + {{ transcript.MG_1_48h_3mg_15_FPKM }} + {{ transcript.MG_1_48h_2_9mg_114_FPKM }})/3,
+    ({{ transcript.MG_1_72h_5_5mg_20_FPKM }} + {{ transcript.MG_1_72h_6_2mg_116_FPKM }} + {{ transcript.MG_1_72h_5_9mg_118_FPKM }})/3,
+    ({{ transcript.MG_1_96h_10_3mg_22_FPKM }} + {{ transcript.MG_1_96h_10_2mg_24_FPKM }} + {{ transcript.MG_1_96h_9_5mg_122_FPKM }})/3,
+]
+var dataMG_2 = [
+    ({{ transcript.MG_2_12h_1_8mg_155_FPKM }} + {{ transcript.MG_2_12h_2_2mg_54_FPKM }} + {{ transcript.MG_2_12h_2mg_152_FPKM }})/3,
+    ({{ transcript.MG_2_24h_2_2mg_56_FPKM }} + {{ transcript.MG_2_24h_2_4mg_59_FPKM }} + {{ transcript.MG_2_24h_2_3mg_157_FPKM }})/3,
+    ({{ transcript.MG_2_48h_4_6mg_62_FPKM }} + {{ transcript.MG_2_48h_4_5mg_63_FPKM }} + {{ transcript.MG_2_48h_4_3mg_163_FPKM }})/3,
+    ({{ transcript.MG_2_72h_8_7mg_67_FPKM }} + {{ transcript.MG_2_72h_8_2mg_68_FPKM }} + {{ transcript.MG_2_72h_7_2mg_167_FPKM }})/3,
+    ({{ transcript.MG_2_96h_11_1mg_71_FPKM }} + {{ transcript.MG_2_96h_12_9mg_74_FPKM }} + {{ transcript.MG_2_96h_10_2mg_171_FPKM }})/3,
+]
+
+
+var dataSG_unfed_scatter = [{y:{{ transcript.SG_unfed_1_5mg_pre2_FPKM }}, x:"Unfed"}, {y:{{ transcript.SG_unfed_1_7mg_pre4_FPKM }}, x:"Unfed"}, {y:{{ transcript.SG_unfed_1_4mg_pre6_FPKM }}, x:"Unfed"}, {y:{{ transcript.SG_unfed_1_6mg_pre8_FPKM }}, x:"Unfed"}, {y:{{ transcript.SG_unfed_1_4mg_pre10_FPKM }}, x:"Unfed"}]
+var dataSG_1_scatter = [
+    {y: {{ transcript.SG_1_12h_1_5mg_1_FPKM }}, x: "12h"}, {y:{{ transcript.SG_1_12h_2mg_105_FPKM }}, x: "12h"}, {y:{{ transcript.SG_1_12h_1_8mg_5_FPKM }}, x: "12h"}, {y:{{ transcript.SG_1_12h_1_7mg_101_FPKM }}, x: "12h"}, {y:{{ transcript.SG_1_12h_2mg_103_FPKM }}, x: "12h"},
+    {y: {{ transcript.SG_1_24h_1_5mg_7_FPKM }}, x: "24h"}, {y:{{ transcript.SG_1_24h_1_7mg_9_FPKM }}, x: "24h"}, {y:{{ transcript.SG_1_24h_2_3mg_109_FPKM }}, x: "24h"}, {y:{{ transcript.SG_1_24h_1_6mg_106_FPKM }}, x: "24h"}, {y:{{ transcript.SG_1_24h_2_3mg_8_FPKM }}, x: "24h"},
+    {y: {{ transcript.SG_1_48h_3_2mg_13_FPKM }}, x: "48h"}, {y:{{ transcript.SG_1_48h_3mg_15_FPKM }}, x: "48h"}, {y:{{ transcript.SG_1_48h_2_9mg_111_FPKM }}, x: "48h"}, {y:{{ transcript.SG_1_48h_3_1mg_113_FPKM }}, x: "48h"}, {y:{{ transcript.SG_1_48h_2_9mg_114_FPKM }}, x: "48h"},
+    {y: {{ transcript.SG_1_72h_5_2mg_18_FPKM }}, x: "72h"}, {y:{{ transcript.SG_1_72h_7_4mg_19_FPKM }}, x: "72h"}, {y:{{ transcript.SG_1_72h_5_5mg_20_FPKM }}, x: "72h"}, {y:{{ transcript.SG_1_72h_6_2mg_116_FPKM }}, x: "72h"}, {y:{{ transcript.SG_1_72h_5_9mg_118_FPKM }}, x: "72h"},
+    {y: {{ transcript.SG_1_96h_10_3mg_21_FPKM }}, x: "96h"}, {y:{{ transcript.SG_1_96h_10_3mg_22_FPKM }}, x: "96h"}, {y:{{ transcript.SG_1_96h_10_2mg_24_FPKM }}, x: "96h"}, {y:{{ transcript.SG_1_96h_9_1mg_121_FPKM }}, x: "96h"}, {y:{{ transcript.SG_1_96h_9_5mg_122_FPKM }}, x: "96h"},
+]
+var dataSG_2_scatter = [
+    {y:{{ transcript.SG_2_12h_2_2mg_52_FPKM }}, x:"12h"}, {y:{{ transcript.SG_2_12h_1_9mg_53_FPKM }}, x:"12h"}, {y:{{ transcript.SG_2_12h_2mg_152_FPKM }}, x:"12h"}, {y:{{ transcript.SG_2_12h_1_7mg_153_FPKM }}, x:"12h"}, {y:{{ transcript.SG_2_12h_1_8mg_155_FPKM }}, x:"12h"},
+    {y:{{ transcript.SG_2_24h_2_2mg_56_FPKM }}, x:"24h"}, {y:{{ transcript.SG_2_24h_2_4mg_59_FPKM }}, x:"24h"}, {y:{{ transcript.SG_2_24h_2_2mg_156_FPKM }}, x:"24h"}, {y:{{ transcript.SG_2_24h_2_3mg_157_FPKM }}, x:"24h"}, {y:{{ transcript.SG_2_24h_2_5mg_159_FPKM }}, x:"24h"},
+    {y:{{ transcript.SG_2_48h_4_6mg_62_FPKM }}, x:"48h"}, {y:{{ transcript.SG_2_48h_4_5mg_63_FPKM }}, x:"48h"}, {y:{{ transcript.SG_2_48h_4_2mg_65_FPKM }}, x:"48h"}, {y:{{ transcript.SG_2_48h_5mg_162_FPKM }}, x:"48h"}, {y:{{ transcript.SG_2_48h_4_3mg_163_FPKM }}, x:"48h"},
+    {y:{{ transcript.SG_2_72h_8_7mg_67_FPKM }}, x:"72h"}, {y:{{ transcript.SG_2_72h_8_2mg_68_FPKM }}, x:"72h"}, {y:{{ transcript.SG_2_72h_9_3mg_69_FPKM }}, x:"72h"}, {y:{{ transcript.SG_2_72h_6_7mg_166_FPKM }}, x:"72h"}, {y:{{ transcript.SG_2_72h_7_2mg_167_FPKM }}, x:"72h"},
+    {y:{{ transcript.SG_2_96h_11_1mg_71_FPKM }}, x:"96h"}, {y:{{ transcript.SG_2_96h_12_9mg_74_FPKM }}, x:"96h"}, {y:{{ transcript.SG_2_96h_15_1mg_75_FPKM }}, x:"96h"}, {y:{{ transcript.SG_2_96h_10_2mg_171_FPKM }}, x:"96h"}, {y:{{ transcript.SG_2_96h_10_1mg_172_FPKM }}, x:"96h"},
+]
+var dataMG_unfed_scatter = [{y:{{ transcript.MG_unfed_1_7mg_pre4_FPKM }}, x:"Unfed"}, {y:{{ transcript.MG_unfed_1_4mg_pre10_FPKM }}, x:"Unfed"}, {y:{{ transcript.MG_unfed_1_6mg_pre8_FPKM }}, x:"Unfed"}]
+var dataMG_1_scatter = [
+    {y:{{ transcript.MG_1_12h_1_8mg_4_FPKM }}, x:"12h"}, {y:{{ transcript.MG_1_12h_1_8mg_5_FPKM }}, x:"12h"}, {y:{{ transcript.MG_1_12h_1_8mg_104_FPKM }}, x:"12h"},
+    {y:{{ transcript.MG_1_24h_1_7mg_9_FPKM }}, x:"24h"}, {y:{{ transcript.MG_1_24h_1_6mg_10_FPKM }}, x:"24h"}, {y:{{ transcript.MG_1_24h_1_9mg_107_FPKM }}, x:"24h"},
+    {y:{{ transcript.MG_1_48h_3_2mg_13_FPKM }}, x:"48h"}, {y:{{ transcript.MG_1_48h_3mg_15_FPKM }}, x:"48h"}, {y:{{ transcript.MG_1_48h_2_9mg_114_FPKM }}, x:"48h"},
+    {y:{{ transcript.MG_1_72h_5_5mg_20_FPKM }}, x:"72h"}, {y:{{ transcript.MG_1_72h_6_2mg_116_FPKM }}, x:"72h"}, {y:{{ transcript.MG_1_72h_5_9mg_118_FPKM }}, x:"72h"},
+    {y:{{ transcript.MG_1_96h_10_3mg_22_FPKM }}, x:"96h"}, {y:{{ transcript.MG_1_96h_10_2mg_24_FPKM }}, x:"96h"}, {y:{{ transcript.MG_1_96h_9_5mg_122_FPKM }}, x:"96h"},
+]
+var dataMG_2_scatter = [
+    {y:{{ transcript.MG_2_12h_1_8mg_155_FPKM }}, x:"12h"}, {y:{{ transcript.MG_2_12h_2_2mg_54_FPKM }}, x:"12h"}, {y:{{ transcript.MG_2_12h_2mg_152_FPKM }}, x:"12h"},
+    {y:{{ transcript.MG_2_24h_2_2mg_56_FPKM }}, x:"24h"}, {y:{{ transcript.MG_2_24h_2_4mg_59_FPKM }}, x:"24h"}, {y:{{ transcript.MG_2_24h_2_3mg_157_FPKM }}, x:"24h"},
+    {y:{{ transcript.MG_2_48h_4_6mg_62_FPKM }}, x:"48h"}, {y:{{ transcript.MG_2_48h_4_5mg_63_FPKM }}, x:"48h"}, {y:{{ transcript.MG_2_48h_4_3mg_163_FPKM }}, x:"48h"},
+    {y:{{ transcript.MG_2_72h_8_7mg_67_FPKM }}, x:"72h"}, {y:{{ transcript.MG_2_72h_8_2mg_68_FPKM }}, x:"72h"}, {y:{{ transcript.MG_2_72h_7_2mg_167_FPKM }}, x:"72h"},
+    {y:{{ transcript.MG_2_96h_11_1mg_71_FPKM }}, x:"96h"}, {y:{{ transcript.MG_2_96h_12_9mg_74_FPKM }}, x:"96h"}, {y:{{ transcript.MG_2_96h_10_2mg_171_FPKM }}, x:"96h"},
+]
+
+
+var config= {
+    type: "line",
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'SG first exposure',
+            data: dataSG_1,
+            fill: false,
+            backgroundColor: 'rgb(52, 152, 219 )',
+            borderColor: 'rgb(52, 152, 219 )',
+
+        },
+            {
+                label: 'SG second exposure',
+                data: dataSG_2,
+                fill: false,
+
+                backgroundColor: 'rgb(26, 82, 118 )',
+                borderColor: 'rgb(26, 82, 118 )',
+            },
+            {
+                label: 'MG first exposure',
+                data: dataMG_1,
+                fill: false,
+
+                backgroundColor: 'rgb(231, 76, 60 )',
+                borderColor: 'rgb(231, 76, 60 )'
+
+            },
+            {
+                label: 'MG second exposure',
+                data: dataMG_2,
+                fill: false,
+                backgroundColor: 'rgb(123, 36, 28 )',
+                borderColor: 'rgb(123, 36, 28 )',
+            }]
+    },
+    options: {
+        title: {
+            display: true,
+            text: 'Expression values (FPKM) per feeding time - ' + type
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+            }],
+            yAxes: [{
+                display: true,
+                type: type
+            }]
+        },
+        tooltips: {
+            callbacks: {
+                label: function (tooltipItem, data) {
+                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                    if (label) {
+                        label += ': ';
+                    }
+                    label += Math.round(tooltipItem.yLabel * 100) / 100;
+                    return label;
+                },
+                title: function () {
+                    return ''
+                }
+            }
+        }
+    }
+}
+
+config2 = {
+    type: "line",
+    data: {
+        datasets: [{
+            label: 'SG first exposure',
+            data: dataSG_1_scatter,
+            fill: false,
+            backgroundColor: 'rgb(52, 152, 219 )',
+            borderColor: 'rgb(52, 152, 219 )',
+            showLine: false,
+
+        },
+            {
+                label: 'SG second exposure',
+                data: dataSG_2_scatter,
+                fill: false,
+
+                backgroundColor: 'rgb(26, 82, 118 )',
+                borderColor: 'rgb(26, 82, 118 )',
+                showLine: false,
+                pointStyle: 'rect',
+            },
+                    {
+                label: 'SG Unfed',
+                data: dataSG_unfed_scatter,
+                fill: false,
+                backgroundColor: 'rgb(127, 179, 213)',
+                borderColor: 'rgb(127, 179, 213)',
+                showLine: false,
+                pointStyle: 'triangle',
+            },
+            {
+                label: 'MG first exposure',
+                data: dataMG_1_scatter,
+                fill: false,
+                backgroundColor: 'rgb(231, 76, 60 )',
+                borderColor: 'rgb(231, 76, 60 )',
+                showLine: false,
+
+            },
+            {
+                label: 'MG second exposure',
+                data: dataMG_2_scatter,
+                fill: false,
+                backgroundColor: 'rgb(123, 36, 28 )',
+                borderColor: 'rgb(123, 36, 28 )',
+                showLine: false,
+                pointStyle: 'rect',
+            },
+            {
+                label: 'MG Unfed',
+                data: dataMG_unfed_scatter,
+                fill: false,
+                backgroundColor: 'rgb(217, 136, 128)',
+                borderColor: 'rgb(217, 136, 128)',
+                showLine: false,
+                pointStyle: 'triangle',
+
+            },
+]
+    },
+    options: {
+        legend: {
+            display: true,
+            labels: {
+                usePointStyle: true,
+            }
+        },
+        title: {
+            display: true,
+            text: 'Expression values (FPKM) per condition - ' + type
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+                labels: ["Unfed", "12h", "24h", "48h", "72h", "96h"],
+            }],
+            yAxes: [{
+                display: true,
+                type: type
+            }]
+        },
+        tooltips: {
+            callbacks: {
+                title: function () {
+                    return ''
+                }
+            }
+        }
+    }
+}
+
+
+
+    window.onload = function() {
+			var ctx = document.getElementById('EChart').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+			var ctx2 = document.getElementById('ScatterChart').getContext('2d');
+			window.myLine2 = new Chart(ctx2, config2);
+		};
+
+		document.getElementById('toggleScale').addEventListener('click', function() {
+			type = type === 'linear' ? 'logarithmic' : 'linear';
+			window.myLine.options.title.text = 'Expression values (FPKM) per feeding time - ' + type;
+			window.myLine.options.scales.yAxes[0] = {
+				display: true,
+				type: type
+			};
+
+			window.myLine.update();
+		});
+
+		document.getElementById('toggleScale2').addEventListener('click', function() {
+			type = type === 'linear' ? 'logarithmic' : 'linear';
+			window.myLine2.options.title.text = 'Expression values (FPKM) per condition - ' + type;
+			window.myLine2.options.scales.yAxes[0] = {
+				display: true,
+				type: type
+			};
+
+			window.myLine2.update();
+		});
+
+</script>
+
+
+{% endblock %}
+
+
+
